@@ -1,5 +1,4 @@
 
-
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local globaltargetplr = ""
 local Window = Rayfield:CreateWindow({
@@ -112,42 +111,59 @@ local hideTools = Tab:CreateToggle({
    end,
 })
 
+local atskybasenode = false
+local prevposition = nil
+
 local createaborderskybase = Tab:CreateButton({
    Name = "Create a sky base out of bounds",
    Callback = function()
-      local args = {
-         1,
-         "Node",
-         CFrame.new(18141.5, 1294, -3262.5, 0, -4.371138828673793e-08, 1, 0, 1, 4.371138828673793e-08, -1, 0, 0)
-      }
-      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
-      task.wait()
-      local args = {
-         1,
-         "Wooden Wall (2x3)",
-         CFrame.new(18140.5, 1281, -3265.5, 0, -4.371138828673793e-08, 1, 0, 1, 4.371138828673793e-08, -1, 0, 0)
-      }
-      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
-      task.wait()
-      local args = {
-         5,
-         "",
-         CFrame.new(18140.5, 1291.75, -3276.25, 0, 0, 1, 1, 2.9802322387695312e-08, 0, -2.9802322387695312e-08, 1, 0)
-      }
-      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
-      task.wait()
-      local args = {
-         5,
-         workspace:WaitForChild("Buildings"):WaitForChild("qyuszn"):WaitForChild(""),
-         CFrame.new(18140.5, 1291.75, -3276.25, 0, 0, 1, 1, 2.9802322387695312e-08, 0, -2.9802322387695312e-08, 1, 0)
-      }
-      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
-      task.wait()
-      game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(18140.4277, 1295.11487, -3264.09351, 0.99901253, 0.0169198252, 0.0410809368, -0.0171779171, 0.999834836, 0.00593775604, -0.0409736857, -0.00663756765, 0.999138176)
-      task.wait(1)
-      game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(18140.4277, 1295.11487, -3264.09351, 0.99901253, 0.0169198252, 0.0410809368, -0.0171779171, 0.999834836, 0.00593775604, -0.0409736857, -0.00663756765, 0.999138176)
+      local player = game:GetService("Players").LocalPlayer
+      local char = player.Character or player.CharacterAdded:Wait()
+      local hrp = char:WaitForChild("HumanoidRootPart")
+
+      if atskybasenode then
+         -- Teleport back to previous location
+         if prevposition then
+            hrp.CFrame = prevposition
+         end
+      else
+         -- Save previous position
+         prevposition = hrp.CFrame
+         -- Build skybase
+         local buildEvent = game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent")
+
+         buildEvent:FireServer(1, "Node", CFrame.new(18141.5, 1294, -3262.5, 0, -4.37e-08, 1, 0, 1, 4.37e-08, -1, 0, 0))
+         task.wait()
+         buildEvent:FireServer(1, "Wooden Wall (2x3)", CFrame.new(18140.5, 1281, -3265.5, 0, -4.37e-08, 1, 0, 1, 4.37e-08, -1, 0, 0))
+         task.wait()
+         buildEvent:FireServer(5, "", CFrame.new(18140.5, 1291.75, -3276.25, 0, 0, 1, 1, 2.98e-08, 0, -2.98e-08, 1, 0))
+         task.wait()
+         
+         -- Fix this line! Replace "" with the actual part name
+         local buildingPart = workspace:WaitForChild("Buildings"):WaitForChild(player.Name):FindFirstChildWhichIsA("BasePart")
+         if buildingPart then
+            buildEvent:FireServer(5, buildingPart, CFrame.new(18140.5, 1291.75, -3276.25, 0, 0, 1, 1, 2.98e-08, 0, -2.98e-08, 1, 0))
+         end
+         
+         -- Teleport to skybase
+         local skybaseCFrame = CFrame.new(18140.4277, 1295.11487, -3264.09351, 0.99901253, 0.0169198252, 0.0410809368, -0.0171779171, 0.999834836, 0.00593775604, -0.0409736857, -0.00663756765, 0.999138176)
+         hrp.CFrame = skybaseCFrame
+         task.wait(1)
+         hrp.CFrame = skybaseCFrame
+         
+         Rayfield:Notify({
+            Title = "Skybase",
+            Content = "Press the build sky base button again to tp back.",
+            Duration = 6.5,
+            Image = "box",
+         })
+      end
+
+      -- Toggle state
+      atskybasenode = not atskybasenode
    end,
 })
+
 --Elements for Movement tab
 
 --tpwalk main
