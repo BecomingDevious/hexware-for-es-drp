@@ -1,0 +1,901 @@
+
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local globaltargetplr = ""
+local Window = Rayfield:CreateWindow({
+  Name = "hexware",
+  Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+  LoadingTitle = "hexware",
+  LoadingSubtitle = "by BecomingDevious",
+  Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+  DisableRayfieldPrompts = false,
+  DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+  ConfigurationSaving = {
+     Enabled = false,
+     FolderName = "hexware_es", -- Create a custom folder for your hub/game
+     FileName = "hexwareconfigs"
+  },
+
+  Discord = {
+     Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+     Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+     RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+  },
+
+  KeySystem = false, -- Set this to true to use our key system
+  KeySettings = {
+     Title = "Untitled",
+     Subtitle = "Key System",
+     Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
+     FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+     SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+     GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+     Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+  }
+})
+
+Rayfield:Notify({  --Loading notification.
+   Title = "Loading hexware...",
+   Content = "Notification",
+   Duration = 3,
+   Image = 0,
+ })
+
+--Tabs
+local Tab = Window:CreateTab("Main", 0) -- Title, Image
+local Tab2 = Window:CreateTab("Movement", 0) -- Title, Image
+local Tab3 = Window:CreateTab("Combat", 0) -- Title, Image
+local Tab4 = Window:CreateTab("Vehicles", 0) -- Title, Image
+local Tab5 = Window:CreateTab("Players", 0) -- Title, Image
+
+--Elements for Main
+
+local InfHunger = Tab:CreateButton({
+   Name = "Infinite Hunger",
+   Callback = function()
+   game:GetService("Players").LocalPlayer:WaitForChild("PlayerData").Hunger.Value = -1
+   end,
+})
+
+local Workspace = game:GetService("Workspace")
+local antinlr = false
+
+Workspace.ChildAdded:Connect(function(child)
+    if antinlr and child.Name == "NL" then
+        child:Destroy()
+    end
+end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
+local event = ReplicatedStorage:WaitForChild("Events"):WaitForChild("WeaponBackEvent")
+
+hideTools = false -- Default off
+
+local function hidetools()
+	for _, child in ipairs(backpack:GetChildren()) do
+		if child:IsA("Tool") then
+			event:FireServer(true, child.Name)
+		end
+	end
+end
+
+-- Always listen for tools being added
+backpack.ChildAdded:Connect(function(child)
+	if hideTools and child:IsA("Tool") then
+		task.wait(0.1)
+		hidetools()
+	end
+end)
+
+
+local AntiNLR = Tab:CreateToggle({
+   Name = "Anti Kill Barriers",
+   CurrentValue = false,
+   Flag = "antiNlr", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   antinlr = Value
+   end,
+})
+
+local hideTools = Tab:CreateToggle({
+   Name = "Hide Tools",
+   CurrentValue = false,
+   Flag = "hideTools", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+       hideTools = Value
+   end,
+})
+
+local createaborderskybase = Tab:CreateButton({
+   Name = "Create a sky base out of bounds",
+   Callback = function()
+      local args = {
+         1,
+         "Node",
+         CFrame.new(18141.5, 1294, -3262.5, 0, -4.371138828673793e-08, 1, 0, 1, 4.371138828673793e-08, -1, 0, 0)
+      }
+      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
+      task.wait()
+      local args = {
+         1,
+         "Wooden Wall (2x3)",
+         CFrame.new(18140.5, 1281, -3265.5, 0, -4.371138828673793e-08, 1, 0, 1, 4.371138828673793e-08, -1, 0, 0)
+      }
+      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
+      task.wait()
+      local args = {
+         5,
+         "",
+         CFrame.new(18140.5, 1291.75, -3276.25, 0, 0, 1, 1, 2.9802322387695312e-08, 0, -2.9802322387695312e-08, 1, 0)
+      }
+      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
+      task.wait()
+      local args = {
+         5,
+         workspace:WaitForChild("Buildings"):WaitForChild("qyuszn"):WaitForChild(""),
+         CFrame.new(18140.5, 1291.75, -3276.25, 0, 0, 1, 1, 2.9802322387695312e-08, 0, -2.9802322387695312e-08, 1, 0)
+      }
+      game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("BuildingEvent"):FireServer(unpack(args))
+      task.wait()
+      game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(18140.4277, 1295.11487, -3264.09351, 0.99901253, 0.0169198252, 0.0410809368, -0.0171779171, 0.999834836, 0.00593775604, -0.0409736857, -0.00663756765, 0.999138176)
+      task.wait(1)
+      game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(18140.4277, 1295.11487, -3264.09351, 0.99901253, 0.0169198252, 0.0410809368, -0.0171779171, 0.999834836, 0.00593775604, -0.0409736857, -0.00663756765, 0.999138176)
+   end,
+})
+--Elements for Movement tab
+
+--tpwalk main
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- SETTINGS
+local tpSpeed = 45 -- Studs per second
+local TPWalkAllowed = false -- Set to false to disable TPWalk
+local tpWalkEnabled = false -- Always on unless TPWalkAllowed is false
+
+-- MAIN LOOP
+RunService.RenderStepped:Connect(function(dt)
+	if not tpWalkEnabled or not TPWalkAllowed then return end
+
+	character = player.Character
+	if not character then return end
+
+	humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+	if not humanoidRootPart then return end
+
+	local moveVec = Vector3.zero
+
+	if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+		moveVec += Vector3.new(0, 0, -1)
+	end
+	if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+		moveVec += Vector3.new(0, 0, 1)
+	end
+	if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+		moveVec += Vector3.new(-1, 0, 0)
+	end
+	if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+		moveVec += Vector3.new(1, 0, 0)
+	end
+
+	if moveVec.Magnitude > 0 then
+		moveVec = moveVec.Unit
+		local cameraCF = workspace.CurrentCamera.CFrame
+		local flatCamLook = Vector3.new(cameraCF.LookVector.X, 0, cameraCF.LookVector.Z).Unit
+		local flatCamRight = Vector3.new(cameraCF.RightVector.X, 0, cameraCF.RightVector.Z).Unit
+
+		local finalMove = (flatCamRight * moveVec.X + flatCamLook * -moveVec.Z).Unit
+		humanoidRootPart.CFrame += finalMove * tpSpeed * dt
+	end
+end)
+
+
+local TpWalkToggle = Tab2:CreateToggle({
+   Name = "TP Walk",
+   CurrentValue = false,
+   Flag = "TpWalkToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   tpWalkEnabled = Value
+   end,
+})
+
+local TpWalkSpeedSlider = Tab2:CreateSlider({
+   Name = "TP Walk speed",
+   Range = {16, 575},
+   Increment = 5,
+   Suffix = "Speed",
+   CurrentValue = 55,
+   Flag = "TpWalkSpeed", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   tpSpeed = Value
+   end,
+})
+
+local TpWalkKeybind = Tab2:CreateKeybind({
+   Name = "Keybind Example",
+   CurrentKeybind = "V",
+   HoldToInteract = false,
+   Flag = "Keybind1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Keybind)
+  
+   TPWalkAllowed = not TPWalkAllowed
+   --print("Hey")
+
+   end,
+})
+
+--Elements for Combat
+
+--Inf Ammo Combat
+-- Inf Ammo Main
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local reloadEvent = ReplicatedStorage:WaitForChild("Events"):WaitForChild("WeaponReloadEvent")
+
+local reloadEnabled = false
+
+-- Table mapping gun names to their required ammo types
+local gunAmmoTypes = {
+    ["M4"] = "Rifle Ammo",
+    ["Remington"] = "Heavy Ammo",
+    ["AK"] = "Rifle Ammo",
+    ["Tommy Gun"] = "SMG Ammo",
+    ["Famas"] = "Rifle Ammo",
+    ["Bizon"] = "SMG Ammo",
+    ["M1911"] = "Pistol Ammo",
+    ["Deagle"] = "Pistol Ammo",
+    ["AR47"] = "Rifle Ammo",
+    ["G36"] = "Rifle Ammo",
+    ["Revolver"] = "Pistol Ammo",
+    ["[PERM] M1911]"] = "Pistol Ammo",
+    ["Tec9"] = "Pistol Ammo",
+    ["Garand"] = "Rifle Ammo",
+    ["Laser Musket"] = "Heavy Ammo",
+    ["Lever Action"] = "Rifle Ammo"
+}
+
+-- Function to get equipped tool
+local function getEquippedTool()
+    local character = player.Character or player.CharacterAdded:Wait()
+    for _, item in ipairs(character:GetChildren()) do
+        if item:IsA("Tool") then
+            return item
+        end
+    end
+    return nil
+end
+
+-- Function to reload weapon based on table
+local function reloadWeapon()
+    if not reloadEnabled then return end
+
+    local weapon = getEquippedTool()
+    if weapon then
+        local ammoType = gunAmmoTypes[weapon.Name]
+        if ammoType then
+            local args = {
+                [1] = ammoType,
+                [2] = 1,
+                [3] = weapon
+            }
+            reloadEvent:FireServer(unpack(args))
+        else
+            warn("No ammo type defined for " .. weapon.Name)
+        end
+    end
+end
+
+-- Helper function to check if a tool is equipped
+local function hasEquippedTool()
+    return getEquippedTool() ~= nil
+end
+
+-- Mouse handling
+local isMouseDown = false
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if hasEquippedTool() and reloadEnabled then
+            reloadWeapon() -- fire once on click
+            isMouseDown = true
+            -- fire repeatedly while held
+            task.spawn(function()
+                while isMouseDown and hasEquippedTool() and reloadEnabled do
+                    task.wait(0.15)
+                    reloadWeapon()
+                end
+            end)
+        end
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isMouseDown = false
+    end
+end)
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local RednameKillAura = false
+local KillAuraCheckIfDeath = true
+local radius = 10
+local debounce = false
+
+-- Get equipped gun
+local function getEquippedGun()
+	for _, tool in ipairs(character:GetChildren()) do
+		if tool:IsA("Tool") then
+			return tool
+		end
+	end
+	return nil
+end
+
+-- Wall check
+local function hasLineOfSight(fromPos, toPos)
+	local ray = Ray.new(fromPos, (toPos - fromPos).Unit * 1000)
+	local hit = Workspace:FindPartOnRay(ray, character, false, true)
+	if not hit then return true end
+	return (hit:IsDescendantOf(Workspace:FindFirstChildWhichIsA("Model"))) or hit:IsDescendantOf(Players)
+end
+
+-- Main loop
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local Events = ReplicatedStorage:WaitForChild("Events")
+local MenuActionEvent = Events:WaitForChild("MenuActionEvent")
+
+local RednameKillAura = false
+local CheckIfDeath = true
+local radius = 8 -- teleport offset radius
+
+-- Get equipped gun
+local function getEquippedGun()
+	for _, tool in ipairs(character:GetChildren()) do
+		if tool:IsA("Tool") then
+			return tool
+		end
+	end
+end
+
+-- Line of sight check
+local function hasLineOfSight(fromPos, toPos)
+	local rayParams = RaycastParams.new()
+	rayParams.FilterDescendantsInstances = {character}
+	rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+	local result = Workspace:Raycast(fromPos, (toPos - fromPos), rayParams)
+	return not result or result.Instance:IsDescendantOf(Workspace:FindFirstChildWhichIsA("Model"))
+end
+
+-- Aura loop
+task.spawn(function()
+	while true do
+		if RednameKillAura then
+			character = player.Character or player.CharacterAdded:Wait()
+			local gun = getEquippedGun()
+			local myHRP = character:FindFirstChild("HumanoidRootPart")
+
+			if gun and myHRP then
+				for _, targetPlayer in ipairs(Players:GetPlayers()) do
+					if targetPlayer == player then continue end
+
+					local flagged = targetPlayer:FindFirstChild("Flagged")
+					if not flagged or not flagged.Value then continue end
+
+					local char = targetPlayer.Character
+					if not char then continue end
+
+					local targetHRP = char:FindFirstChild("HumanoidRootPart")
+					local targetHum = char:FindFirstChild("Humanoid")
+
+					if not targetHRP or not targetHum then continue end
+					if CheckIfDeath and targetHum.Health <= 0 then continue end
+
+					if (targetHRP.Position - myHRP.Position).Magnitude > 50 then continue end
+					if not hasLineOfSight(myHRP.Position, targetHRP.Position) then continue end
+
+					-- Teleport beside player
+					local angle = math.rad(math.random(0, 360))
+					local offset = Vector3.new(math.cos(angle), 0, math.sin(angle)) * radius
+					local tpPos = targetHRP.Position + offset
+
+					character:SetPrimaryPartCFrame(CFrame.new(tpPos, targetHRP.Position))
+					task.wait(0.15)
+
+					MenuActionEvent:FireServer(
+						33,
+						targetHRP.CFrame,
+						2,
+						targetHum,
+						26,
+						gun,
+						nil,
+						1
+					)
+
+					task.wait(0.1)
+				end
+			end
+		end
+		task.wait(0.2)
+	end
+end)
+
+-- GUI Toggle Hook
+local redNameKillAuraButton = Tab3:CreateToggle({
+	Name = "Red name Kill Aura",
+	CurrentValue = false,
+	Flag = "redNamekillAura",
+	Callback = function(Value)
+		RednameKillAura = Value
+	end,
+})
+
+local infAmmoToggle = Tab3:CreateToggle({
+   Name = "Infinite Ammo",
+   CurrentValue = false,
+   Flag = "infAmmo", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+   reloadEnabled = Value
+   end,
+})
+
+--Elements for Vehicles
+
+--Bring cars
+local BringUnoccVehiclesButton = Tab4:CreateButton({
+   Name = "Bring unoccupied vehicles",
+   Callback = function()
+      local ReplicatedStorage = game:GetService("ReplicatedStorage")
+      local interactRemote = ReplicatedStorage:WaitForChild("Events"):WaitForChild("InteractEvent")
+      local player = game.Players.LocalPlayer
+      local character = player.Character or player.CharacterAdded:Wait()
+      local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+      local humanoid = character:WaitForChild("Humanoid")
+      local RunService = game:GetService("RunService")
+      
+      -- Global success flag
+      _G.CarTeleportSuccess = false
+      
+      -- Save the original position
+      local originalCFrame = humanoidRootPart.CFrame
+      local originalPosition = originalCFrame.Position
+      
+      -- Function to check if a VehicleSeat is unoccupied and not moving
+      local function isSeatFreeAndStill(seat)
+         if seat:IsA("VehicleSeat") and not seat.Occupant then
+            local velocity = seat.AssemblyLinearVelocity.Magnitude
+            return velocity < 1 -- Considered "not moving"
+         end
+         return false
+      end
+      
+      -- Function to wait for the player to jump (get out of seat)
+      local function waitForJump()
+         while humanoid:GetState() ~= Enum.HumanoidStateType.Jumping do
+            task.wait()
+         end
+         while humanoid:GetState() == Enum.HumanoidStateType.Jumping do
+            task.wait()
+         end
+      end
+      
+      -- Function to teleport a car model to the original position
+      local function teleportCarModel(carModel)
+         if not carModel then return false end
+      
+         -- Attempt to claim physics ownership
+         for _, part in ipairs(carModel:GetDescendants()) do
+            if part:IsA("BasePart") then
+               pcall(function()
+                  part:SetNetworkOwner(player)
+               end)
+            end
+         end
+      
+         RunService.Heartbeat:Wait()
+      
+         local root = carModel.PrimaryPart or carModel:FindFirstChildWhichIsA("BasePart")
+         if root then
+            local offset = originalPosition - root.Position
+            carModel:TranslateBy(offset)
+            return true
+         end
+      
+         return false
+      end
+      
+      -- Main process
+      local function processSeats()
+         local successCount = 0
+         local totalCount = 0
+      
+         for _, obj in ipairs(workspace.Vehicles:GetDescendants()) do
+            if obj:IsA("VehicleSeat") and isSeatFreeAndStill(obj) then
+               totalCount += 1
+      
+               -- Sit in seat
+               interactRemote:FireServer(obj)
+               waitForJump()
+               task.wait(0.1)
+      
+               -- Find car model
+               local carModel = obj:FindFirstAncestorOfClass("Model")
+               if teleportCarModel(carModel) then
+                  successCount += 1
+                  print("[CarTeleport] Teleported:", carModel.Name)
+               else
+                  warn("[CarTeleport] Failed to teleport car.")
+               end
+            end
+         end
+      
+         -- Return player to original position
+         humanoidRootPart.CFrame = originalCFrame
+      
+         -- Update global success status
+         _G.CarTeleportSuccess = (successCount == totalCount and totalCount > 0)
+         print("[CarTeleport] Complete. Success:", _G.CarTeleportSuccess, "Teleported:", successCount, "/", totalCount)
+      end
+      
+      -- Run
+      processSeats()
+      
+   end,
+})
+
+--Steal Cars
+
+local SitVehiclesButton = Tab4:CreateButton({
+   Name = "Sit in unoccupied vehicles",
+   Callback = function()
+      local ReplicatedStorage = game:GetService("ReplicatedStorage")
+      local interactRemote = ReplicatedStorage:WaitForChild("Events"):WaitForChild("InteractEvent")
+      local player = game.Players.LocalPlayer
+      local character = player.Character or player.CharacterAdded:Wait()
+      local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+      local humanoid = character:WaitForChild("Humanoid")
+      
+      -- Save the original position
+      local originalCFrame = humanoidRootPart.CFrame
+      
+      -- Function to check if a VehicleSeat is unoccupied and not moving
+      local function isSeatFreeAndStill(seat)
+         if seat:IsA("VehicleSeat") and not seat.Occupant then
+            local velocity = seat.AssemblyLinearVelocity.Magnitude
+            return velocity < 1 -- Considered "not moving"
+         end
+         return false
+      end
+      
+      -- Function to wait for the player to jump
+      local function waitForJump()
+         while humanoid:GetState() ~= Enum.HumanoidStateType.Jumping do
+            task.wait()
+         end
+         while humanoid:GetState() == Enum.HumanoidStateType.Jumping do
+            task.wait()
+         end
+      end
+      
+      -- Main function
+      local function processSeats()
+         for _, obj in ipairs(workspace.Vehicles:GetDescendants()) do
+            if obj:IsA("VehicleSeat") and isSeatFreeAndStill(obj) then
+               interactRemote:FireServer(obj)
+               waitForJump()
+               task.wait(0.1)
+            end
+         end
+      
+         -- Return to original position
+         humanoidRootPart.CFrame = originalCFrame
+      end
+      
+      processSeats()      
+   end,
+})
+
+--Players Tab Elements
+
+local PlayerTextbox = Tab5:CreateInput({  --Player Textbox
+   Name = "Player Name",
+   CurrentValue = "",
+   PlaceholderText = "Type player's username",
+   RemoveTextAfterFocusLost = false,
+   Flag = "TargetPlayerUsername",
+   Callback = function(Text)
+    globaltargetplr = Text
+    print(target)
+   end,
+})
+
+local carannoy = false
+
+local CarAnnoyToggle = Tab5:CreateToggle({
+   Name = "Car Annoy",
+   CurrentValue = false,
+   Flag = "CarAnnoy", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+
+      carannoy = Value
+   
+-- CONFIG
+local RotationSpeed = 3000 -- degrees per second
+
+-- SERVICES
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+
+-- UTILS
+local function getTargetHRP()
+    if not Value then return nil end
+    local target = Players:FindFirstChild(globaltargetplr)
+    if target and target.Character then
+        return target.Character:FindFirstChild("HumanoidRootPart")
+    end
+end
+
+-- TRACKED CARS
+local activeCars = _G._ActiveAnnoyCars or {}
+_G._ActiveAnnoyCars = activeCars -- store globally so the state persists across toggles
+
+-- CLEANUP if toggled OFF
+if not Value then
+    for model in pairs(activeCars) do
+        activeCars[model] = nil
+    end
+    return
+end
+
+-- START ROTATION + TELEPORT
+local function startSpinAndTeleport(model)
+    if activeCars[model] then return end
+    activeCars[model] = true
+
+    task.spawn(function()
+        while activeCars[model] and model and model.PrimaryPart and Value do
+            local dt = task.wait()
+            local target = getTargetHRP()
+            if not target then continue end
+
+            local speed = math.rad(RotationSpeed)
+            local spin = CFrame.Angles(speed * dt, speed * dt, speed * dt)
+            local currentCF = model.PrimaryPart.CFrame
+
+            local rotOnly = currentCF - currentCF.Position
+            local targetPos = target.Position + Vector3.new(0, 5, 0)
+            local finalCF = CFrame.new(targetPos) * rotOnly * spin
+
+            model:SetPrimaryPartCFrame(finalCF)
+        end
+    end)
+end
+
+-- SEAT ENTER / EXIT TRACKING
+Humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
+    if not Value then return end
+
+    local seat = Humanoid.SeatPart
+    if seat and (seat:IsA("Seat") or seat:IsA("VehicleSeat")) then
+        local model = seat:FindFirstAncestorOfClass("Model")
+        if model and model.PrimaryPart then
+            seat:GetPropertyChangedSignal("Occupant"):Wait()
+            task.wait(0.1)
+            if not seat.Occupant and carannoy  then
+                startSpinAndTeleport(model)
+            end
+        end
+    end
+end)
+end,
+})
+
+local KillPlr = Tab5:CreateButton({
+   Name = "Kill",
+   Callback = function()
+      local Players = game:GetService("Players")
+      local ReplicatedStorage = game:GetService("ReplicatedStorage")
+      
+      local player = Players.LocalPlayer
+      local character = player.Character or player.CharacterAdded:Wait()
+      local targetName = globaltargetplr
+      
+      local CheckIfDeath = true -- If true, KillAura stops when target dies
+      local KillAura = true
+      
+      local radius = 10
+      local originalCFrame = character:WaitForChild("HumanoidRootPart").CFrame
+      
+      -- Finds a Tool (gun) in the character
+      local function findGun()
+          for _, item in ipairs(character:GetChildren()) do
+              if item:IsA("Tool") then
+                  return item
+              end
+          end
+          return nil
+      end
+      
+      -- Main KillAura loop
+      task.spawn(function()
+          while true do
+              if not KillAura then
+                  task.wait(0.1)
+                  continue
+              end
+      
+              local target = workspace:FindFirstChild(targetName)
+      
+              if not target then
+                  task.wait(0.5)
+                  continue
+              end
+      
+              local targetHumanoid = target:FindFirstChild("Humanoid")
+              local targetHRP = target:FindFirstChild("HumanoidRootPart")
+      
+              if not targetHumanoid or not targetHRP then
+                  task.wait(0.5)
+                  continue
+              end
+      
+              -- Check if target is dead
+              if targetHumanoid.Health <= 0 and CheckIfDeath then
+                  warn("Target is dead. Stopping Kill.")
+                  KillAura = false
+                  break -- Exit the loop entirely
+              end
+      
+              local gun = findGun()
+              if not gun then
+                  warn("No gun/tool found in character!")
+                  task.wait(0.5)
+                  continue
+              end
+      
+              -- Teleport near target
+              local angle = math.rad(math.random(0, 359))
+              local offset = Vector3.new(math.cos(angle), 0, math.sin(angle)) * radius
+              local randomPos = targetHRP.Position + offset
+      
+              character:SetPrimaryPartCFrame(CFrame.new(randomPos, targetHRP.Position))
+              task.wait(0.3)
+      
+              -- Fire weapon
+              ReplicatedStorage.Events.MenuActionEvent:FireServer(
+                  33,
+                  targetHRP.CFrame,
+                  2,
+                  targetHumanoid,
+                  26,
+                  gun,
+                  nil,
+                  1
+              )
+      
+              task.wait(0.1)
+      
+              -- Return to original position
+              character:SetPrimaryPartCFrame(originalCFrame)
+              task.wait(0.01)
+          end
+      end)
+      
+      task.wait(3)
+      CheckIfDeath = false
+      KillAura = false
+      
+   end,
+})
+
+local gotoplr = Tab5:CreateButton({
+   Name = "Go to",
+   Callback = function()
+      game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Players"):FindFirstChild(globaltargetplr).Character.HumanoidRootPart.CFrame
+   end,
+})
+
+local plrs = game:GetService("Players")
+
+local showcash = Tab5:CreateButton({
+   Name = "Cash",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Player's Cash:",
+         Content = plrs:FindFirstChild(globaltargetplr).PlayerData.Currency.Value,
+         Duration = 6.5,
+         Image = "banknote",
+      })
+   end,
+})
+
+local showaureus = Tab5:CreateButton({
+   Name = "Aureus",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Player's Aureus:",
+         Content = plrs:FindFirstChild(globaltargetplr).PlayerData.PCurrency.Value,
+         Duration = 6.5,
+         Image = "gem",
+      })
+   end,
+})
+
+local showjob = Tab5:CreateButton({
+   Name = "Job",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Player's Job:",
+         Content = plrs:FindFirstChild(globaltargetplr).Job.Value,
+         Duration = 6.5,
+         Image = "circle-user-round",
+      })
+   end,
+})
+
+local showinv = Tab5:CreateButton({
+   Name = "Inventory",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Player's Inventory:",
+         Content = plrs:FindFirstChild(globaltargetplr).PlayerData.Inventory.Value,
+         Duration = 6.5,
+         Image = "backpack",
+      })
+   end,
+})
+
+local showbank = Tab5:CreateButton({
+   Name = "Bank",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Player's Items stored in bank:",
+         Content = plrs:FindFirstChild(globaltargetplr).PlayerData.Bank.Value,
+         Duration = 6.5,
+         Image = "landmark",
+      })
+   end,
+})
+
+local showunqsandperms = Tab5:CreateButton({
+   Name = "UNQs and Perms",
+   Callback = function()
+      Rayfield:Notify({
+         Title = "Player's Perms and UNQs:",
+         Content = plrs:FindFirstChild(globaltargetplr).PlayerData.BInventory.Value,
+         Duration = 6.5,
+         Image = "scroll",
+      })
+   end,
+})
+
+
+Rayfield:LoadConfiguration()
