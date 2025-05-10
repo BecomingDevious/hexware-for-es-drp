@@ -1,1 +1,2 @@
-# hexware-for-es-drp
+# Hexware for Electric State: Dark RP
+
